@@ -1,0 +1,90 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+pip-wheel-metadata/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*,cover
+
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+.ENV/
+venv.bak/
+
+# IDEs and editors
+.idea/
+.vscode/
+*.sublime-*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment variables / secrets
+.env
+.env.local
+.env.*.local
+
+# Logs and runtime files
+*.log
+logs/
+*.pid
+*.sock
+
+# Data files (CSV, DB, sqlite). If you want to keep e.g. data/run.csv in git, remove or adjust this line.
+data/*.csv
+*.sqlite3
+*.db
+
+# Certificates and keys
+*.pem
+*.key
+*.crt
+
+# Misc
+*.swp
+*~
+
+# Node modules (if any)
+node_modules/
+
+# Coverage and packaging
+.mypy_cache/
+/.pytest_cache/

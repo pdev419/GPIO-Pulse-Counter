@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pi5 Pulse Logger (M2)</title>
+    <style>
+        :root {
+            --bg1: #0ea5e9;
+            /* sky-500 */
+            --bg2: #a855f7;
+            /* violet-500 */
+            --card: #0b1220cc;
+            /* glass */
+            --text: #e5e7eb;
+            /* slate-200 */
+            --muted: #9ca3af;
+            /* gray-400 */
+            --accent: #22d3ee;
+            /* cyan-400 */
+            --good: #10b981;
+            /* emerald-500 */
+            --warn: #f59e0b;
+            /* amber-500 */
+            --bad: #ef4444;
+            /* red-500 */
+            --btn1: #6366f1;
+            /* indigo-500 */
+            --btn2: #22c55e;
+            /* green-500 */
+            --btn3: #f97316;
+            /* orange-500 */
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: var(--text);
+            background: linear-gradient(135deg, var(--bg1), var(--bg2));
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px
+        }
+
+        .hero {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px
+        }
+
+        h1 {
+            font-size: 28px;
+            margin: 0;
+            letter-spacing: .2px
+        }
+
+        .sub {
+            opacity: .8
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.2fr .8fr;
+            gap: 16px
+        }
+
+        .card {
+            background: var(--card);
+            backdrop-filter: blur(8px);
+            border: 1px solid #ffffff22;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 10px 30px #0004
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap
+        }
+
+        button {
+            appearance: none;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-weight: 600;
+            cursor: pointer;
+            color: white;
+            box-shadow: 0 6px 18px #0003;
+            transition: transform .05s ease, filter .2s ease;
+            outline: 2px solid transparent;
+            outline-offset: 2px
+        }
+
+        button:active {
+            transform: translateY(1px)
+        }
+
+        .b-start {
+            background: linear-gradient(135deg, var(--btn2), #16a34a)
+        }
+
+        .b-stop {
+            background: linear-gradient(135deg, var(--btn3), #ea580c)
+        }
+
+        .b-dl {
+            background: linear-gradient(135deg, var(--btn1), #4338ca)
+        }
+
+        a.btn {
+            display: inline-block;
+            text-decoration: none;
+            color: white
+        }
+
+        .statuschips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px
+        }
+
+        .chip {
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .3px;
+            box-shadow: inset 0 0 0 1px #ffffff33
+        }
+
+        .chip.good {
+            background: #10b98122;
+            color: #ecfdf5;
+            border: 1px solid #10b98166
+        }
+
+        .chip.warn {
+            background: #f59e0b22;
+            color: #fffbeb;
+            border: 1px solid #f59e0b66
+        }
+
+        .chip.bad {
+            background: #ef444422;
+            color: #fef2f2;
+            border: 1px solid #ef444466
+        }
+
+        .chip.neutral {
+            background: #94a3b822;
+            color: #f8fafc;
+            border: 1px solid #94a3b866
+        }
+
+        /* text tones for self-check label */
+        .t-good {
+            color: var(--good);
+            font-weight: 700
+        }
+
+        .t-warn {
+            color: var(--warn);
+            font-weight: 700
+        }
+
+        .t-bad {
+            color: var(--bad);
+            font-weight: 700
+        }
+
+        .t-neutral {
+            color: var(--muted);
+            font-weight: 700
+        }
+
+        .kpis {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 12px
+        }
+
+        .kpi {
+            background: #0b1220aa;
+            border: 1px solid #ffffff22;
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center
+        }
+
+        .kpi .label {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        .kpi .value {
+            font-size: 22px;
+            font-weight: 800;
+            margin-top: 6px
+        }
+
+        canvas {
+            width: 100%;
+            height: 160px;
+            border-radius: 12px;
+            background: #0b1220;
+            box-shadow: inset 0 0 0 1px #ffffff22
+        }
+
+        .muted {
+            color: var(--muted)
+        }
+
+        .kv {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 12px
+        }
+
+        .kv div {
+            font-size: 14px
+        }
+
+        .kv b {
+            color: #fff
+        }
+
+        @media (max-width: 880px) {
+            .grid {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="hero">
+            <div>
+                <h1>Pi5 Pulse Logger <span class="sub">(M2)</span></h1>
+                <div class="muted">Start/Stop logging • Live KPIs • CSV Download • Z-telegram • Calibration • Peer sync
+                </div>
+            </div>
+            <div class="row">
+                <button class="b-start" onclick="post('/api/start')">▶ Start</button>
+                <button class="b-stop" onclick="post('/api/stop')">■ Stop</button>
+                <button class="btn b-dl" onclick="window.location='/api/csv'">⬇ Download CSV</button>
+            </div>
+        </div>
+
+        <div class="grid">
+            <!-- Status + KPIs -->
+            <div class="card">
+                <div class="row" style="justify-content:space-between;align-items:center">
+                    <div style="font-weight:700">Status</div>
+                    <div class="statuschips" id="chips"></div>
+                </div>
+                <div class="kpis">
+                    <div class="kpi">
+                        <div class="label">Rate (Hz)</div>
+                        <div class="value" id="rate">0.000000</div>
+                    </div>
+                    <div class="kpi">
+                        <div class="label">Z</div>
+                        <div class="value" id="z">-</div>
+                    </div>
+                    <div class="kpi">
+                        <div class="label">Total Count</div>
+                        <div class="value" id="count">0</div>
+                    </div>
+                    <div class="kpi">
+                        <div class="label">Seq</div>
+                        <div class="value" id="seq">0</div>
+                    </div>
+                </div>
+                <div style="margin-top:12px">
+                    <canvas id="spark" width="900" height="160"></canvas>
+                </div>
+            </div>
+
+            <!-- Now panel -->
+            <div class="card">
+                <div style="font-weight:700;margin-bottom:8px">Now</div>
+                <div class="kv">
+                    <div>Timestamp: <b id="ts">—</b></div>
+                    <div>Uptime: <b id="uptime">—</b></div>
+                    <div>CPU Temp: <b id="temp">—</b></div>
+                    <div>Last pulse age: <b id="age">—</b></div>
+                </div>
+                <div style="margin-top:12px" class="muted">Self-check: <span id="selfcheck" class="t-neutral">—</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Control / M2 panel -->
+        <div class="card" style="margin-top:16px">
+            <div style="font-weight:700;margin-bottom:8px">Control</div>
+            <div class="kv">
+                <div>Rate (Hz, <b id="win">—</b>s): <b id="rate2">—</b></div>
+                <div>Target: <b id="target">—</b></div>
+                <div>PPM offset: <b id="ppm">—</b></div>
+                <div>Lock state: <b id="lock">—</b></div>
+                <div>Peer rate: <b id="peer_rate">—</b></div>
+                <div>Peer quality: <b id="peer_q">—</b></div>
+            </div>
+            <div class="row" style="margin-top:10px">
+                <button class="b-start" onclick="setTarget()">Set Target</button>
+                <button class="b-start" onclick="calOn()">Cal ON</button>
+                <button class="b-stop" onclick="calOff()">Cal OFF</button>
+                <button class="b-dl" onclick="nudge()">Nudge ppm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            // Parse self_check strings like "GREEN: Healthy" → {tone:'good', textClass:'t-good', label:'Healthy'}
+            function parseSelfCheck(s) {
+                if (!s || typeof s !== 'string') return { tone: 'neutral', textClass: 't-neutral', label: '—' };
+                const up = s.trim();
+                const m = up.split(':');
+                const head = (m[0] || '').trim().toUpperCase();
+                const label = (m.slice(1).join(':') || '').trim() || (head === 'GREEN' ? 'Healthy' : head === 'YELLOW' ? 'Warning' : head === 'RED' ? 'Problem' : up);
+                if (head.startsWith('GREEN')) return { tone: 'good', textClass: 't-good', label };
+                if (head.startsWith('YELLOW')) return { tone: 'warn', textClass: 't-warn', label };
+                if (head.startsWith('RED')) return { tone: 'bad', textClass: 't-bad', label };
+                return { tone: 'neutral', textClass: 't-neutral', label: up };
+            }
+
+            const state = { rates: [], maxPts: 240, canvas: null, ctx: null };
+
+            async function post(url) {
+                await fetch(url, { method: 'POST' });
+                await refresh();
+            }
+            window.post = post; // used by Start/Stop buttons
+
+            function chip(text, tone) {
+                const div = document.createElement('span');
+                div.className = 'chip ' + tone; div.textContent = text; return div;
+            }
+            function setChips(s) {
+                const el = document.getElementById('chips'); if (!el) return;
+                el.innerHTML = '';
+                el.appendChild(chip(s.running ? 'RUNNING' : 'STOPPED', s.running ? 'good' : 'neutral'));
+            }
+
+            function drawSpark() {
+                const { canvas, ctx, rates } = state;
+                if (!canvas || !ctx) return;
+                const w = canvas.width, h = canvas.height;
+                ctx.clearRect(0, 0, w, h);
+                // bg grid
+                ctx.globalAlpha = 0.12; ctx.strokeStyle = '#93c5fd';
+                ctx.beginPath();
+                for (let x = 0; x < w; x += 90) { ctx.moveTo(x, 0); ctx.lineTo(x, h); }
+                for (let y = 0; y < h; y += 40) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
+                ctx.stroke();
+                ctx.globalAlpha = 1;
+                if (rates.length < 2) return;
+                const min = Math.min(...rates.map(r => r.y)), max = Math.max(...rates.map(r => r.y));
+                const pad = (max - min) * 0.1 || 1; const lo = min - pad, hi = max + pad;
+                const mid = (max + min) / 2.0;
+                const nx = i => (i / (rates.length - 1)) * w;
+                const ny = v => {
+                    const y = h/2 - ((v - mid) / (hi - lo)) * (hi - lo > 1 ? h : 30);
+                    return y;
+                };
+
+                let lastColor = rates[0].color;
+                ctx.lineWidth = 2.0;
+                const segments = [];
+                const segment = [];
+                for (let i = 0; i < rates.length; i++) {
+                    const r = rates[i];
+                    if (r.color !== lastColor || i == rates.length - 1) {
+                        segments.push({ points: JSON.parse(JSON.stringify(segment)), color: lastColor });
+                        lastColor = r.color;
+                        segment.length = 0;
+                        segment.push({x: nx(i), y: ny(r.y)});
+                    }
+                    else {
+                        segment.push({x: nx(i), y: ny(r.y)});
+                    }
+                }
+
+                for (const segment of segments) {
+                    if (segment.points.length < 2) continue;
+                    if (segment.color) {
+                        const grad = ctx.createLinearGradient(0, 0, w, 0);
+                        grad.addColorStop(0, '#22d3ee'); grad.addColorStop(1, '#a78bfa');
+                        ctx.strokeStyle = grad;
+                    } else {
+                        ctx.strokeStyle = 'transparent';
+                    }
+                    ctx.beginPath(); ctx.moveTo(segment.points[0].x, segment.points[0].y);
+                    for (let i = 1; i < segment.points.length; i++) {
+                        ctx.lineTo(segment.points[i].x, segment.points[i].y);
+                    }
+                    ctx.stroke();
+                }
+            }
+
+            // Controls
+            async function setTarget() {
+                const v = prompt('Target rate (Hz)?'); if (!v) return;
+                await fetch('/api/set_target', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ rate_hz: parseFloat(v) }) });
+                refresh();
+            }
+            async function calOn() { await fetch('/api/cal_on', { method: 'POST' }); refresh(); }
+            async function calOff() { await fetch('/api/cal_off', { method: 'POST' }); refresh(); }
+            async function nudge() { const v = prompt('PPM offset?'); if (!v) return; await fetch('/api/nudge_ppm', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ppm: parseFloat(v) }) }); refresh(); }
+            window.setTarget = setTarget; window.calOn = calOn; window.calOff = calOff; window.nudge = nudge;
+
+            async function refresh() {
+                const r = await fetch('/api/status');
+                const s = await r.json();
+
+                const set = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+
+                // Top KPIs
+                set('rate', (s.rate_hz || 0).toFixed(6));
+                set('z', s.z_value == null ? '—' : s.z_value.toFixed(6));
+                set('count', s.count);
+                set('seq', s.seq);
+
+                // Now panel
+                set('ts', s.timestamp);
+                set('uptime', Math.round(s.uptime_sec || 0) + ' s');
+                set('temp', s.cpu_temp_c == null ? 'n/a' : s.cpu_temp_c.toFixed(1) + ' °C');
+                set('age', s.last_pulse_age_sec == null ? '—' : s.last_pulse_age_sec.toFixed(2) + ' s');
+
+                const sc = parseSelfCheck(s.self_check);
+                const scEl = document.getElementById('selfcheck');
+                if (scEl) { scEl.textContent = sc.label || '—'; scEl.className = sc.textClass; }
+
+                setChips(s);
+
+                // Sparkline
+                if (typeof s.rate_hz === 'number') {
+                    const point = {y: s.rate_hz, color: false}
+                    if (s.window_sec - s.window_sec_setting <= 0.2 && s.running == true && s.quality != "WARMUP"){
+                        point.color = true;
+                    } 
+                    state.rates.push(point);
+                    if (state.rates.length > state.maxPts) state.rates.shift();
+                    drawSpark();
+                }
+
+                // Control panel
+                set('win', (s.window_sec || 0).toFixed(3));
+                set('rate2', (s.rate_hz || 0).toFixed(6));
+                set('target', (s.rate_target || 0).toFixed(6));
+                set('ppm', (s.ppm_offset == null ? '0.0' : Number(s.ppm_offset).toFixed(2)));
+                set('lock', s.lock_state || 'FREE');
+                set('peer_rate', s.peer_rate_hz == null ? '—' : s.peer_rate_hz.toFixed(6));
+                set('peer_q', s.peer_quality || '—');
+            }
+
+            function init() {
+                state.canvas = document.getElementById('spark');
+                if (!state.canvas) { console.warn('Canvas #spark not found'); return; }
+                state.ctx = state.canvas.getContext('2d');
+                refresh();
+                setInterval(refresh, 1000);
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+        })();
+    </script>
+</body>
+
+</html>

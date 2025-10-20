@@ -1,0 +1,11 @@
+fastapi==0.115.2
+uvicorn[standard]==0.30.6
+pydantic==2.9.2
+python-dotenv==1.0.1
+pandas==2.2.3
+matplotlib==3.9.2
+lgpio==0.2.2
+smbus2==0.4.3
+
+# Optional (legacy/alt on non-Pi5):
+# pigpio==1.78
