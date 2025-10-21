@@ -37,7 +37,7 @@ class PeerSync:
             j = obj.get("jitter")
             if r is None or q is None:
                 continue
-            if (q == "OK") and (j is not None):
+            if j is not None:
                 if (self.best_peer_jitter is None) or (j < self.best_peer_jitter):
                     self.best_peer_rate = r
                     self.best_peer_quality = q
