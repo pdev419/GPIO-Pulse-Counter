@@ -130,7 +130,7 @@ class PulseCounter:
                 return False
             
             print("Starting PulseCounter...")
-            
+
             self._stop_evt.clear()
             self._thread = threading.Thread(target=self._run, daemon=True)
             self._running = True
@@ -329,6 +329,7 @@ class PulseCounter:
                 if self._cal_on or PEER_LOCK_ON:
                     self._apply_calibration(rate, dt)
                 if self.peer:
+                    print(f"Using peer rate: {self.peer.best_peer_rate} Hz, quality: {self.peer.best_peer_quality}")
                     self._peer_rate_hz = self.peer.best_peer_rate
                     self._peer_quality = self.peer.best_peer_quality
 
