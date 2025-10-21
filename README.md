@@ -13,7 +13,7 @@ sudo apt install -y python3-pip python3-venv python3-lgpio python3-smbus
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env   # or paste your .env values
-python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 # open http://<pi-ip>:8000
 ````
 

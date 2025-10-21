@@ -129,6 +129,8 @@ class PulseCounter:
             if self.pid_guard and not self.pid_guard.acquire():
                 return False
             
+            print("Starting PulseCounter...")
+            
             self._stop_evt.clear()
             self._thread = threading.Thread(target=self._run, daemon=True)
             self._running = True
@@ -145,6 +147,9 @@ class PulseCounter:
         with self._lock:
             self._running = False
             self._thread = None
+            
+            print("Stopping PulseCounter...")
+
             if self._cb is not None:
                 try:
                     cancel = getattr(self._cb, "cancel", None)
