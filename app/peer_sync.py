@@ -38,7 +38,12 @@ class PeerSync:
             if r is None or q is None:
                 continue
             if j is not None:
-                if (self.best_peer_jitter is None) or (j < self.best_peer_jitter):
+                if self.best_peer_ip == addr[0]:
+                    self.best_peer_rate = r
+                    self.best_peer_quality = q
+                    self.best_peer_jitter = j
+                    self.best_peer_ip = addr[0]
+                elif (self.best_peer_jitter is None) or (j < self.best_peer_jitter):
                     self.best_peer_rate = r
                     self.best_peer_quality = q
                     self.best_peer_jitter = j
